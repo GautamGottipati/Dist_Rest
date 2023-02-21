@@ -2,8 +2,10 @@ package com.example.demo;
 
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -25,16 +27,46 @@ public class SellerClient {
             System.out.println(postResponse.body());
         }
 
-        static public void login(HttpClient client, String payload) throws IOException, InterruptedException{
-            URI login = URI.create("http://localhost:8080/login");
-            HttpRequest httpLoginRequest = HttpRequest.newBuilder()
-                                                .uri(login)
-                                                .header("Content-Type", "text/plain")
-                                                .POST(HttpRequest.BodyPublishers.ofString("This is a login payload"))
-                                                .build();
-            HttpResponse<String> loginResponse = client.send(httpLoginRequest, HttpResponse.BodyHandlers.ofString());
-            System.out.println(loginResponse.body());
+//        static public void login(HttpClient client, String payload) throws IOException, InterruptedException{
+//            URI login = URI.create("http://localhost:8080/login");
+//            HttpRequest httpLoginRequest = HttpRequest.newBuilder()
+//                                                .uri(login)
+//                                                .header("Content-Type", "text/plain")
+//                                                .POST(HttpRequest.BodyPublishers.ofString("This is a login payload"))
+//                                                .build();
+//            HttpResponse<String> loginResponse = client.send(httpLoginRequest, HttpResponse.BodyHandlers.ofString());
+//            System.out.println(loginResponse.body());
+//        }
+
+    static public void login(HttpClient client, String payload) throws IOException, InterruptedException{
+        URL url = new URL ("http://localhost:8080/login");
+        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+        String jsonInputString = "{\"name\": \"Upendra\", \"password\": \"Programmer\"}";
+        try(OutputStream os = con.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes("utf-8");
+            os.write(input, 0, input.length);
         }
+        try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+            StringBuilder response = new StringBuilder();
+            String responseLine = null;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            System.out.println(response.toString());
+        }
+//        HttpRequest httpLoginRequest = HttpRequest.newBuilder()
+//                .uri(login)
+//                .header("Content-Type", "text/plain")
+//                .POST(HttpRequest.BodyPublishers.ofString("This is a login payload"))
+//                .build();
+//        HttpResponse<String> loginResponse = client.send(httpLoginRequest, HttpResponse.BodyHandlers.ofString());
+//        System.out.println(loginResponse.body());
+    }
 
         static public void logout(HttpClient client, String payload) throws IOException, InterruptedException{
             URI logout = URI.create("http://localhost:8080/logout");
@@ -84,13 +116,8 @@ public class SellerClient {
         public static void main(String[] args) throws IOException, InterruptedException{
             HttpClient client = HttpClient.newHttpClient();
 
-            
-            
-            
-            
-            
            
-            File file = new File("D:\\Gautam\\java\\Dist\\demo\\demo\\src\\main\\resources\\file1.txt");
+            File file = new File("src/main/resources/file1.txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
             while ((st = br.readLine()) != null) {

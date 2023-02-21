@@ -1,11 +1,13 @@
 package com.example.demo;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.json.simple.JSONObject;
 
 @RestController
 public class HelloWorld {
@@ -33,10 +35,18 @@ public class HelloWorld {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody String payload){
-        System.out.println(payload);
+    public String login(@RequestBody JSONObject payload){
+//        System.out.println(payload);
+        System.out.println((String) payload.get("name"));
+        System.out.println((String) payload.get("password"));
         return "User logged in Successfully";
     }
+
+//    @PostMapping("/login")
+//    public String login(@RequestBody String payload){
+//        System.out.println(payload);
+//        return "User logged in Successfully";
+//    }
 
     @PostMapping("/logout")
     public String logout(@RequestBody String payload){

@@ -1,6 +1,8 @@
 package com.example.demo;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +41,17 @@ public class HelloWorld {
 //        System.out.println(payload);
         System.out.println((String) payload.get("name"));
         System.out.println((String) payload.get("password"));
-        return "User logged in Successfully";
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8081)
+                .usePlaintext()
+                .build();
+
+        ecommerce.SellerGGrpc.SellerGBlockingStub stub = ecommerce.SellerGGrpc.newBlockingStub(channel);
+//        TimeUnit.SECONDS.sleep(4);
+        ecommerce.sellerLoginResponse loginResponse = stub.sellerLogin(ecommerce.sellerLoginRequest.newBuilder()
+                .setUsername((String) payload.get("name"))
+                .setPassword((String) payload.get("password"))
+                .build());
+        return loginResponse.getLoginStatus();
     }
 
 //    @PostMapping("/login")

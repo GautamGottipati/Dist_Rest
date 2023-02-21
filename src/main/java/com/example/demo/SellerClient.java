@@ -17,7 +17,7 @@ public class SellerClient {
 
 
         static public void createAccount(HttpClient client, String payload) throws IOException, InterruptedException{
-            URI createUser = URI.create("http://localhost:8080/createUser");
+            URI createUser = URI.create("http://localhost:8083/createUser");
             HttpRequest httpPostRequest = HttpRequest.newBuilder()
                                                 .uri(createUser)
                                                 .header("Content-Type", "text/plain")
@@ -27,25 +27,16 @@ public class SellerClient {
             System.out.println(postResponse.body());
         }
 
-//        static public void login(HttpClient client, String payload) throws IOException, InterruptedException{
-//            URI login = URI.create("http://localhost:8080/login");
-//            HttpRequest httpLoginRequest = HttpRequest.newBuilder()
-//                                                .uri(login)
-//                                                .header("Content-Type", "text/plain")
-//                                                .POST(HttpRequest.BodyPublishers.ofString("This is a login payload"))
-//                                                .build();
-//            HttpResponse<String> loginResponse = client.send(httpLoginRequest, HttpResponse.BodyHandlers.ofString());
-//            System.out.println(loginResponse.body());
-//        }
+
 
     static public void login(HttpClient client, String payload) throws IOException, InterruptedException{
-        URL url = new URL ("http://localhost:8080/login");
+        URL url = new URL ("http://localhost:8083/login");
         HttpURLConnection con = (HttpURLConnection)url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json");
         con.setRequestProperty("Accept", "application/json");
         con.setDoOutput(true);
-        String jsonInputString = "{\"name\": \"Upendra\", \"password\": \"Programmer\"}";
+        String jsonInputString = "{\"name\": \"0\", \"password\": \"hello123\"}";
         try(OutputStream os = con.getOutputStream()) {
             byte[] input = jsonInputString.getBytes("utf-8");
             os.write(input, 0, input.length);
@@ -69,7 +60,7 @@ public class SellerClient {
     }
 
         static public void logout(HttpClient client, String payload) throws IOException, InterruptedException{
-            URI logout = URI.create("http://localhost:8080/logout");
+            URI logout = URI.create("http://localhost:8083/logout");
             HttpRequest httpLogoutRequest = HttpRequest.newBuilder()
                                                 .uri(logout)
                                                 .header("Content-Type", "text/plain")
@@ -81,7 +72,7 @@ public class SellerClient {
 
         static public void rating(HttpClient client, String payload) throws IOException, InterruptedException{
             String[] parts = payload.split(" ");
-            URI ratingUri = URI.create("http://localhost:8080/rating/"+parts[1]);
+            URI ratingUri = URI.create("http://localhost:8083/rating/"+parts[1]);
             HttpRequest requestSellerRating = HttpRequest.newBuilder().uri(ratingUri).GET().build();
             HttpResponse<String> response = client.send(requestSellerRating, HttpResponse.BodyHandlers.ofString());
             System.out.println(response.body());
@@ -89,7 +80,7 @@ public class SellerClient {
         }
 
         static public void putItem(HttpClient client, String payload) throws IOException, InterruptedException{
-            URI putItem = URI.create("http://localhost:8080/putItem");
+            URI putItem = URI.create("http://localhost:8083/putItem");
             HttpRequest httpPutItemRequest = HttpRequest.newBuilder()
                                                 .uri(putItem)
                                                 .header("Content-Type", "text/plain")
@@ -100,7 +91,7 @@ public class SellerClient {
         }
 
         static public void updateItem(HttpClient client, String payload) throws IOException, InterruptedException{
-            URI updateItemPrice = URI.create("http://localhost:8080/update");
+            URI updateItemPrice = URI.create("http://localhost:8083/update");
             HttpRequest httpUpdateRequest = HttpRequest.newBuilder()
                                                 .uri(updateItemPrice)
                                                 .header("Content-Type", "text/plain")

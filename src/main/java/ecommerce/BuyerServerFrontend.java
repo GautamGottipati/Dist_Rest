@@ -5,12 +5,15 @@ import io.grpc.ManagedChannelBuilder;
 import org.springframework.web.bind.annotation.*;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 public class BuyerServerFrontend {
 
     @PostMapping("/createBuyerAccount")
     public String createBuyerAccount(@RequestBody JSONObject payload){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
@@ -26,7 +29,7 @@ public class BuyerServerFrontend {
     @PostMapping("/loginBuyer")
     public String loginBuyer(@RequestBody JSONObject payload){
 //        System.out.println(payload);
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
@@ -41,7 +44,7 @@ public class BuyerServerFrontend {
 
     @PostMapping("/logoutBuyer")
     public String logoutBuyer(@RequestBody JSONObject payload){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
@@ -55,7 +58,7 @@ public class BuyerServerFrontend {
 
     @PostMapping("/addToShoppingCart")
     public String addToShoppingCart(@RequestBody JSONObject payload){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
@@ -71,7 +74,7 @@ public class BuyerServerFrontend {
 
     @PutMapping("/removeItemFromShoppingCart")
     public String removeFromShoppingCart(@RequestBody JSONObject payload){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
@@ -87,7 +90,7 @@ public class BuyerServerFrontend {
 
     @DeleteMapping("/clearShoppingCart")
     public String clearShoppingCart(@RequestBody JSONObject payload){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
@@ -101,7 +104,7 @@ public class BuyerServerFrontend {
 
     @GetMapping("/displayShoppingCart/{buyerId}")
     public String displayShoppingCart(@PathVariable("buyerId") String buyerId){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
@@ -116,7 +119,7 @@ public class BuyerServerFrontend {
     @PostMapping("/feedbackSeller")
     public String feedBackSeller(@RequestBody JSONObject payload){
 
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
@@ -132,7 +135,7 @@ public class BuyerServerFrontend {
     @GetMapping("/sellerRatingByBuyer/{sellerId}")
     public String sellerRating(@PathVariable("sellerId") String sellerId){
 
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
@@ -144,25 +147,24 @@ public class BuyerServerFrontend {
         return sellerRatingByBuyerResponse.getRatingStatus();
     }
 
-//    @PostMapping("/searchItems")
-//    public String searchItems(@RequestBody JSONObject payload){
-//        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
-//                .usePlaintext()
-//                .build();
-//        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
-////
-//        searchItemsResponse searchItemsResponse = stub.searchItems(searchItemsRequest.newBuilder()
-//                .setItemCategory(Integer.parseInt((String) payload.get("itemCategory")))
-//                        .setKeywords()
-//
-//                .build());
-//        channel.shutdown();
-//        return searchItemsResponse.getSearchItemsStatus();
-//    }
+    @PostMapping("/searchItems")
+    public String searchItems(@RequestBody JSONObject payload){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+        List<String> keywords = (ArrayList<String>)payload.get("keywords");
+        searchItemsResponse searchItemsResponse = stub.searchItems(searchItemsRequest.newBuilder()
+                .setItemCategory(Integer.parseInt((String) payload.get("itemCategory")))
+                .addAllKeywords(keywords)
+                .build());
+        channel.shutdown();
+        return searchItemsResponse.getSearchItemsStatus();
+    }
 
     @GetMapping("/purchaseHistory/{buyerId}")
     public String purchaseHistory(@PathVariable("buyerId") String buyerId){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
@@ -176,7 +178,7 @@ public class BuyerServerFrontend {
 
     @PostMapping ("/makePurchase")
     public String makePurchase(@RequestBody JSONObject payload){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8085)
                 .usePlaintext()
                 .build();
         BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);

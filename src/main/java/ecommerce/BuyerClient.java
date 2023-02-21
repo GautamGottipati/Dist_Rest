@@ -1,6 +1,7 @@
 package ecommerce;
 
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.*;
@@ -161,11 +162,18 @@ public class BuyerClient {
         }
 
         static public void searchItems(String url, String payload) throws IOException, InterruptedException{
-            HttpURLConnection con = establishConnection(url,"/loginBuyer","POST");
+            HttpURLConnection con = establishConnection(url,"/searchItems","POST");
             String[] components = payload.split(" ");
+            JSONArray Keywords = new JSONArray();
+            Keywords.add(components[2]);
+            Keywords.add(components[3]);
+            Keywords.add(components[4]);
+            Keywords.add(components[5]);
+            Keywords.add(components[6]);
             JSONObject obj = new JSONObject();
-            obj.put("buyerId", components[1]);
-            obj.put("password", components[2]);
+            obj.put("itemCategory", components[1]);
+            obj.put("keywords",Keywords);
+
             String jsonInputString = obj
                     .toString();
             try(OutputStream os = con.getOutputStream()) {
@@ -203,11 +211,12 @@ public class BuyerClient {
 
         public static void main(String[] args) throws IOException, InterruptedException{
             HttpClient client = HttpClient.newHttpClient();
-            File file = new File("src/main/resources/buyer.txt");
+            final long startTime = System.currentTimeMillis();
+            File file = new File(args[0]);
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
-            String ip_address = "http://localhost:";
-            String portNum = "8080";
+            String ip_address = args[1];
+            String portNum = args[2];
             while ((st = br.readLine()) != null) {
                 // System.out.println(st+);
                 String[] parts = st.split(" ");
@@ -252,6 +261,18 @@ public class BuyerClient {
 
                 // System.out.println(st + st.charAt(0));
             }
-
+            final long endTime = System.currentTimeMillis();
+            System.out.println("Buyer client execution time: " + (endTime - startTime));
+            String finalMessage = "Buyer Server start time: " + startTime + " end time: " + endTime;
+            System.out.println(finalMessage);
+            String filename = String.valueOf(startTime)+"_buyer"+"_"+String.valueOf(args[3]);
+            try {
+                FileWriter myWriter = new FileWriter(filename);
+                myWriter.write(finalMessage + "\n" + "Buyer client execution time: " + (endTime - startTime));
+                myWriter.close();
+            } catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
     }
 }

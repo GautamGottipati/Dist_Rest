@@ -1,6 +1,7 @@
 package ecommerce;
 
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.*;
@@ -113,11 +114,22 @@ public class SellerClient {
         }
 
         static public void putItem(String url, String payload) throws IOException, InterruptedException{
-            HttpURLConnection con = establishConnection(url,"/login","POST");
+            HttpURLConnection con = establishConnection(url,"/putItem","POST");
             String[] components = payload.split(" ");
+            JSONArray Keywords = new JSONArray();
+            Keywords.add(components[3]);
+            Keywords.add(components[4]);
+            Keywords.add(components[5]);
+            Keywords.add(components[6]);
+            Keywords.add(components[7]);
             JSONObject obj = new JSONObject();
-            obj.put("name", components[1]);
-            obj.put("password", components[2]);
+            obj.put("itemName", components[1]);
+            obj.put("itemCategory", components[2]);
+            obj.put("condition", components[8]);
+            obj.put("salePrice", components[9]);
+            obj.put("sellerId", components[10]);
+            obj.put("quantity", components[11]);
+            obj.put("keywords",Keywords);
             String jsonInputString = obj
                     .toString();
             try(OutputStream os = con.getOutputStream()) {
@@ -147,10 +159,10 @@ public class SellerClient {
 
         public static void main(String[] args) throws IOException, InterruptedException{
             HttpClient client = HttpClient.newHttpClient();
-            String ip_address = "http://localhost:";
-            String portNum = "8080";
-           
-            File file = new File("src/main/resources/file1.txt");
+            String ip_address = args[1];
+            String portNum = args[2];
+            final long startTime = System.currentTimeMillis();
+            File file = new File(args[0]);
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
             while ((st = br.readLine()) != null) {
@@ -170,6 +182,9 @@ public class SellerClient {
                 else if(part1.equals("4")){
                     rating(ip_address+portNum, st);
                 }
+                else if(part1.equals("5")){
+                    putItem(ip_address+portNum, st);
+                }
 
                 else if(part1.equals("6")){
                     updateItem(ip_address+portNum, st);
@@ -184,5 +199,18 @@ public class SellerClient {
                 // System.out.println(st + st.charAt(0));
             }
 
+            final long endTime = System.currentTimeMillis();
+            System.out.println("Seller client execution time: " + (endTime - startTime));
+             String finalMessage = "Seller Server start time: " + startTime + " end time: " + endTime;
+            System.out.println(finalMessage);
+            String filename = String.valueOf(startTime)+"_seller"+"_"+String.valueOf(args[3]);
+            try {
+                FileWriter myWriter = new FileWriter(filename);
+                myWriter.write(finalMessage + "\n" + "Seller client execution time: " + (endTime - startTime));
+                myWriter.close();
+            } catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
     }
 }

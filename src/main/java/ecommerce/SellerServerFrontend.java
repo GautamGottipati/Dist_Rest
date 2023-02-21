@@ -14,7 +14,7 @@ public class SellerServerFrontend {
 
     @PostMapping ("/createSellerAccount")
     public String createSellerAccount(@RequestBody JSONObject payload) {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8081)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8086)
                 .usePlaintext()
                 .build();
         ecommerce.SellerGrpc.SellerBlockingStub stub = ecommerce.SellerGrpc.newBlockingStub(channel);
@@ -29,11 +29,11 @@ public class SellerServerFrontend {
 
     @GetMapping("/sellerRating/{sellerId}")
     public String getRating(@PathVariable("sellerId") String sellerId) {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8081)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8086)
                 .usePlaintext()
                 .build();
         ecommerce.SellerGrpc.SellerBlockingStub stub = ecommerce.SellerGrpc.newBlockingStub(channel);
-//        TimeUnit.SECONDS.sleep(4);
+
         sellerRatingResponse ratingResponse = stub.sellerRating(sellerRatingRequest.newBuilder()
                 .setSellerId(Long.parseLong((String) sellerId))
                 .build());
@@ -43,7 +43,7 @@ public class SellerServerFrontend {
 
     @DeleteMapping ("/removeItem")
     public String removeItem(@RequestBody JSONObject payload){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8081)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8086)
                 .usePlaintext()
                 .build();
         ecommerce.SellerGrpc.SellerBlockingStub stub = ecommerce.SellerGrpc.newBlockingStub(channel);
@@ -59,7 +59,7 @@ public class SellerServerFrontend {
 
     @GetMapping ("/displayItemsOnSale/{sellerId}")
     public String displayItemsOnSale(@PathVariable("sellerId") String sellerId){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8081)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8086)
                 .usePlaintext()
                 .build();
         ecommerce.SellerGrpc.SellerBlockingStub stub = ecommerce.SellerGrpc.newBlockingStub(channel);
@@ -74,7 +74,7 @@ public class SellerServerFrontend {
     @PostMapping("/login")
     public String login(@RequestBody JSONObject payload){
 //        System.out.println(payload);
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8081)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8086)
                 .usePlaintext()
                 .build();
         ecommerce.SellerGrpc.SellerBlockingStub stub = ecommerce.SellerGrpc.newBlockingStub(channel);
@@ -90,7 +90,7 @@ public class SellerServerFrontend {
 
     @PostMapping("/logout")
     public String logout(@RequestBody JSONObject payload){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8081)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8086)
                 .usePlaintext()
                 .build();
         ecommerce.SellerGrpc.SellerBlockingStub stub = ecommerce.SellerGrpc.newBlockingStub(channel);
@@ -104,25 +104,20 @@ public class SellerServerFrontend {
 
     @PostMapping("/putItem")
     public String putItem(@RequestBody JSONObject payload){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8081)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8086)
                 .usePlaintext()
                 .build();
         ecommerce.SellerGrpc.SellerBlockingStub stub = ecommerce.SellerGrpc.newBlockingStub(channel);
 //        TimeUnit.SECONDS.sleep(4);
-        List<String> keywords = new ArrayList<>();
-        keywords.add("headphones");
-        keywords.add("wireless");
-        keywords.add("music");
-        keywords.add("sound");
-        keywords.add("songs");
+        List<String> keywords = (ArrayList<String>)payload.get("keywords");
         putItemResponse putItemRes = stub.putItem(putItemRequest.newBuilder()
                 .setItemName((String) payload.get("itemName"))
-                .setItemCategory((Integer) payload.get("itemCategory"))
+                .setItemCategory(Integer.parseInt((String) payload.get("itemCategory")))
                 .addAllKeywords(keywords)
-                .setCondition((Boolean) payload.get("condition"))
-                .setSalePrice((Double) payload.get("salePrice"))
-                .setSellerId((Long) payload.get("sellerId"))
-                .setQuantity((Integer) payload.get("quantity"))
+                .setCondition(Boolean.parseBoolean((String) payload.get("condition")))
+                .setSalePrice(Double.parseDouble((String) payload.get("salePrice")))
+                .setSellerId(Long.parseLong((String) payload.get("sellerId")))
+                .setQuantity(Integer.parseInt((String) payload.get("quantity")))
                 .build());
         channel.shutdown();
         return putItemRes.getPutItemStatus();
@@ -130,7 +125,7 @@ public class SellerServerFrontend {
 
     @PutMapping("/updateItemPrice")
     public String updateItemPrice(@RequestBody JSONObject payload){
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8081)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8086)
                 .usePlaintext()
                 .build();
         ecommerce.SellerGrpc.SellerBlockingStub stub = ecommerce.SellerGrpc.newBlockingStub(channel);

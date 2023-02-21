@@ -1,0 +1,135 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "ecommerce";
+
+
+service Buyer {
+  rpc loginBuyer(loginBuyerRequest) returns (loginBuyerResponse);
+  rpc createBuyerAccount(createBuyerAccountRequest) returns (createBuyerAccountResponse);
+  rpc logoutBuyer(logoutBuyerRequest) returns (logoutBuyerResponse);
+  rpc addToShoppingCart(addToShoppingCartRequest) returns (addToShoppingCartResponse);
+  rpc removeFromShoppingCart(removeFromShoppingCartRequest) returns (removeFromShoppingCartResponse);
+  rpc clearShoppingCart(clearShoppingCartRequest) returns (clearShoppingCartResponse);
+  rpc displayShoppingCart(displayShoppingCartRequest) returns (displayShoppingCartResponse);
+  rpc sellerRating(sellerRatingByBuyerRequest) returns (sellerRatingByBuyerResponse);
+  rpc feedBackSeller(feedBackSellerRequest) returns (feedBackSellerResponse);
+  rpc purchaseHistory(purchaseHistoryRequest) returns (purchaseHistoryResponse);
+  rpc makePurchase(makePurchaseRequest) returns (makePurchaseResponse);
+  rpc searchItems(searchItemsRequest) returns (searchItemsResponse);
+
+}
+
+message createBuyerAccountRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message createBuyerAccountResponse {
+  string createAccountStatus = 3;
+}
+
+message loginBuyerRequest {
+  uint64 buyerId = 4;
+  string password = 5;
+}
+
+message loginBuyerResponse {
+  string loginStatus = 6;
+}
+
+message logoutBuyerRequest {
+  uint64 buyerId = 7;
+
+}
+
+message logoutBuyerResponse {
+  string logoutStatus = 8;
+}
+
+
+message addToShoppingCartRequest {
+  uint64 buyerId = 9;
+  uint64 itemId = 10;
+  int32 quantity = 11;
+}
+
+message addToShoppingCartResponse {
+  string addToShoppingCartStatus = 12;
+}
+
+message removeFromShoppingCartRequest {
+  uint64 buyerId = 13;
+  uint64 itemId = 14;
+  int32 quantity = 15;
+}
+
+message removeFromShoppingCartResponse {
+  string removeFromShoppingCartStatus = 16;
+}
+
+message clearShoppingCartRequest {
+  uint64 buyerId = 17;
+}
+
+
+
+message clearShoppingCartResponse {
+  string clearShoppingCartStatus = 18;
+}
+
+message displayShoppingCartRequest {
+  uint64 buyerId = 19;
+}
+
+
+
+message displayShoppingCartResponse {
+  string displayShoppingCartStatus = 20;
+}
+
+message feedBackSellerRequest {
+  uint64 itemId = 21;
+  int32 rating = 22;
+}
+
+message feedBackSellerResponse {
+  string feedBackSellerStatus = 23;
+}
+
+message sellerRatingByBuyerRequest {
+  uint64 sellerId = 24;
+}
+
+message sellerRatingByBuyerResponse {
+  string ratingStatus = 25;
+}
+
+message purchaseHistoryRequest {
+  uint64 buyerId = 26;
+}
+
+message purchaseHistoryResponse {
+  string purchaseHistoryStatus = 27;
+}
+
+message makePurchaseRequest {
+  uint64 buyerId = 28 ;
+  string buyerName = 29;
+  string cardNumber = 30;
+  string expiryDate = 31;
+}
+
+message makePurchaseResponse {
+  string makePurchaseStatus = 32;
+}
+
+message searchItemsRequest {
+  int32 itemCategory = 33;
+  repeated string keywords = 34;
+}
+message searchItemsResponse {
+  string searchItemsStatus = 35;
+}
+
+
+

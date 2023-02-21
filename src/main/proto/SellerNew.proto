@@ -1,0 +1,93 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "ecommerce";
+
+message sellerLoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message sellerLoginResponse {
+  string loginStatus = 3;
+}
+
+message createSellerAccountRequest {
+  string username = 4;
+  string password = 5;
+}
+
+message createSellerAccountResponse {
+  string createAccountStatus = 6;
+}
+
+message logoutSellerRequest {
+  uint64 sellerId = 7;
+
+}
+
+message logoutSellerResponse {
+  string logoutStatus = 8;
+}
+
+message sellerRatingRequest {
+  uint64 sellerId = 9;
+}
+
+message sellerRatingResponse {
+  string ratingStatus = 10;
+}
+
+message putItemRequest {
+  string itemName = 11;
+  int32 itemCategory = 12;
+  repeated string keywords = 13;
+  bool condition = 14;
+  double salePrice = 15;
+  uint64 sellerId = 16;
+  int32 quantity = 17;
+
+}
+
+message putItemResponse {
+  string putItemStatus = 18;
+}
+
+
+message updateItemSalePriceRequest {
+      uint64 itemId = 19;
+      double newSalePrice = 20;
+}
+
+message updateItemSalePriceResponse {
+      string updateItemSalePriceStatus = 21;
+}
+
+message removeItemRequest {
+      uint64 itemId = 22;
+      int32 quantity = 23;
+}
+
+message removeItemResponse {
+    string removeItemStatus = 24;
+}
+
+message displayItemsOnSaleRequest {
+    uint64 sellerId = 25;
+}
+
+message displayItemsOnSaleResponse {
+    string displayItemsOnSaleStatus = 26;
+}
+
+service Seller {
+  rpc sellerLogin(sellerLoginRequest) returns (sellerLoginResponse);
+  rpc createSellerAccount(createSellerAccountRequest) returns (createSellerAccountResponse);
+  rpc logoutSeller(logoutSellerRequest) returns (logoutSellerResponse);
+  rpc sellerRating(sellerRatingRequest) returns (sellerRatingResponse);
+  rpc putItem(putItemRequest) returns (putItemResponse);
+  rpc updateItemSalePrice(updateItemSalePriceRequest) returns (updateItemSalePriceResponse);
+  rpc removeItem(removeItemRequest) returns (removeItemResponse);
+  rpc displayItemsOnSale(displayItemsOnSaleRequest) returns (displayItemsOnSaleResponse);
+
+}
+

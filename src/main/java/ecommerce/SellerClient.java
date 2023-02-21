@@ -157,29 +157,21 @@ public class SellerClient {
                 // System.out.println(st+);
                 String[] parts = st.split(" ");
                 String part1 = parts[0];
-                // String part2 = parts[1];
-                // String part3 = String.join(" ",Arrays.copyOfRange(parts,2,parts.length));
-                // System.out.println("------------------------------");
-                // System.out.println("Part1 = "+part1);
-                // System.out.println("Part2 = "+part2);
-                // System.out.println("Part3 = "+part3);
 
                 if(part1.equals("1")){
                     createAccount(ip_address+portNum, st);
                 }
-                if(part1.equals("2")){
+                else if(part1.equals("2")){
                     login(ip_address+portNum, st);
                 }
-                if(part1.equals("3")){
+                else if(part1.equals("3")){
                     logout(ip_address+portNum, st);
                 }
-                if(part1.equals("4")){
+                else if(part1.equals("4")){
                     rating(ip_address+portNum, st);
                 }
-//                if(part1.equals("5")){
-//                    putItem(ip_address+portNum, st);
-//                }
-                if(part1.equals("6")){
+
+                else if(part1.equals("6")){
                     updateItem(ip_address+portNum, st);
                 }
                 else if(part1.equals("7")) {

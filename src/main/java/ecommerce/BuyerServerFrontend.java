@@ -1,93 +1,195 @@
 package ecommerce;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import org.springframework.web.bind.annotation.*;
 import org.json.simple.JSONObject;
 
 @RestController
 public class BuyerServerFrontend {
 
-    @GetMapping("/helloBuyer")
-    public String helloWorld(){
-        return "Hello-world";
+    @PostMapping("/createBuyerAccount")
+    public String createBuyerAccount(@RequestBody JSONObject payload){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+//        TimeUnit.SECONDS.sleep(4);
+        createBuyerAccountResponse createBuyerAccountResponse = stub.createBuyerAccount(createBuyerAccountRequest.newBuilder()
+                .setUsername(((String) payload.get("userName")))
+                .setPassword(((String) payload.get("password")))
+                .build());
+        channel.shutdown();
+        return createBuyerAccountResponse.getCreateAccountStatus();
     }
 
-
-    @PostMapping("/buyer/createUser")
-    public String createBuyerAccount(@RequestBody String payload){
-        System.out.println(payload);
-        return "User created Successfully";
-    }
-
-    @PostMapping("/buyer/login")
+    @PostMapping("/loginBuyer")
     public String loginBuyer(@RequestBody JSONObject payload){
 //        System.out.println(payload);
-        System.out.println("I am here");
-        System.out.println((String) payload.get("name"));
-        System.out.println((String) payload.get("password"));
-        return "User logged in Successfully";
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+//        TimeUnit.SECONDS.sleep(4);
+        loginBuyerResponse loginResponse = stub.loginBuyer(loginBuyerRequest.newBuilder()
+                .setBuyerId(Long.parseLong((String) payload.get("buyerId")))
+                        .setPassword((String) payload.get("password"))
+                .build());
+        channel.shutdown();
+        return loginResponse.getLoginStatus();
     }
 
-//    @PostMapping("/login")
-//    public String login(@RequestBody String payload){
-//        System.out.println(payload);
-//        return "User logged in Successfully";
+    @PostMapping("/logoutBuyer")
+    public String logoutBuyer(@RequestBody JSONObject payload){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+        logoutBuyerResponse logoutResponse = stub.logoutBuyer(logoutBuyerRequest.newBuilder()
+                .setBuyerId(Long.parseLong((String) payload.get("buyerId")))
+                .build());
+        channel.shutdown();
+        return logoutResponse.getLogoutStatus();
+    }
+
+
+    @PostMapping("/addToShoppingCart")
+    public String addToShoppingCart(@RequestBody JSONObject payload){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+//
+        addToShoppingCartResponse addToShoppingCartResponse = stub.addToShoppingCart(addToShoppingCartRequest.newBuilder()
+                .setBuyerId(Long.parseLong((String) payload.get("buyerId")))
+                .setItemId(Long.parseLong((String) payload.get("itemId")))
+                .setQuantity(Integer.parseInt((String) payload.get("quantity")))
+                .build());
+        channel.shutdown();
+        return addToShoppingCartResponse.getAddToShoppingCartStatus();
+    }
+
+    @PutMapping("/removeItemFromShoppingCart")
+    public String removeFromShoppingCart(@RequestBody JSONObject payload){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+//
+        removeFromShoppingCartResponse removeFromShoppingCartResponse = stub.removeFromShoppingCart(removeFromShoppingCartRequest.newBuilder()
+                .setBuyerId(Long.parseLong((String) payload.get("buyerId")))
+                .setItemId(Long.parseLong((String) payload.get("itemId")))
+                .setQuantity(Integer.parseInt((String) payload.get("quantity")))
+                .build());
+        channel.shutdown();
+        return removeFromShoppingCartResponse.getRemoveFromShoppingCartStatus();
+    }
+
+    @DeleteMapping("/clearShoppingCart")
+    public String clearShoppingCart(@RequestBody JSONObject payload){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+//
+        clearShoppingCartResponse clearShoppingCartResponse = stub.clearShoppingCart(clearShoppingCartRequest.newBuilder()
+                .setBuyerId(Long.parseLong((String) payload.get("buyerId")))
+                .build());
+        channel.shutdown();
+        return clearShoppingCartResponse.getClearShoppingCartStatus();
+    }
+
+    @GetMapping("/displayShoppingCart/{buyerId}")
+    public String displayShoppingCart(@PathVariable("buyerId") String buyerId){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+//
+        displayShoppingCartResponse displayShoppingCartResponse = stub.displayShoppingCart(displayShoppingCartRequest.newBuilder()
+                .setBuyerId(Long.parseLong((String) buyerId))
+                .build());
+        channel.shutdown();
+        return displayShoppingCartResponse.getDisplayShoppingCartStatus();
+    }
+
+    @PostMapping("/feedbackSeller")
+    public String feedBackSeller(@RequestBody JSONObject payload){
+
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+//
+        feedBackSellerResponse feedBackSellerResponse = stub.feedBackSeller(feedBackSellerRequest.newBuilder()
+                .setItemId(Long.parseLong((String) payload.get("itemId")))
+                .setRating(Integer.parseInt((String) payload.get("rating")))
+                .build());
+        channel.shutdown();
+        return feedBackSellerResponse.getFeedBackSellerStatus();
+    }
+
+    @GetMapping("/sellerRatingByBuyer/{sellerId}")
+    public String sellerRating(@PathVariable("sellerId") String sellerId){
+
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+//
+        sellerRatingByBuyerResponse sellerRatingByBuyerResponse = stub.sellerRating(sellerRatingByBuyerRequest.newBuilder()
+                .setSellerId(Long.parseLong((String) sellerId))
+                .build());
+        channel.shutdown();
+        return sellerRatingByBuyerResponse.getRatingStatus();
+    }
+
+//    @PostMapping("/searchItems")
+//    public String searchItems(@RequestBody JSONObject payload){
+//        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+//                .usePlaintext()
+//                .build();
+//        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+////
+//        searchItemsResponse searchItemsResponse = stub.searchItems(searchItemsRequest.newBuilder()
+//                .setItemCategory(Integer.parseInt((String) payload.get("itemCategory")))
+//                        .setKeywords()
+//
+//                .build());
+//        channel.shutdown();
+//        return searchItemsResponse.getSearchItemsStatus();
 //    }
 
-    @PostMapping("/buyer/logout")
-    public String logoutBuyer(@RequestBody String payload){
-        System.out.println(payload);
-        return "User logged out Successfully";
+    @GetMapping("/purchaseHistory/{buyerId}")
+    public String purchaseHistory(@PathVariable("buyerId") String buyerId){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+//
+        purchaseHistoryResponse purchaseHistoryResponse = stub.purchaseHistory(purchaseHistoryRequest.newBuilder()
+                .setBuyerId(Long.parseLong((String) buyerId))
+                .build());
+        channel.shutdown();
+        return purchaseHistoryResponse.getPurchaseHistoryStatus();
     }
 
-    @PostMapping("/addToCart")
-    public String addToShoppingCart(@RequestBody String payload){
-        System.out.println(payload);
-        return "put successful";
+    @PostMapping ("/makePurchase")
+    public String makePurchase(@RequestBody JSONObject payload){
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092)
+                .usePlaintext()
+                .build();
+        BuyerGrpc.BuyerBlockingStub stub = ecommerce.BuyerGrpc.newBlockingStub(channel);
+
+        makePurchaseResponse makePurchaseResponse = stub.makePurchase(makePurchaseRequest.newBuilder()
+                .setBuyerId(Long.parseLong((String) payload.get("buyerId")))
+                .setBuyerName((String) payload.get("buyerName"))
+                .setCardNumber((String) payload.get("cardNumber"))
+                .setExpiryDate((String) payload.get("expiryDate"))
+                .build());
+        channel.shutdown();
+        return makePurchaseResponse.getMakePurchaseStatus();
     }
 
-    @DeleteMapping("/removeItemFromShoppingCart")
-    public String removeFromShoppingCart(@RequestBody JSONObject payload){
-        return "Removed Items";
-    }
-
-    @DeleteMapping("/clearCart")
-    public String clearShoppingCart(@RequestBody JSONObject payload){
-        return "Clear Cart";
-    }
-
-    @GetMapping("/display")
-    public String displayShoppingCart(){
-        return "Display function";
-    }
-
-    @PostMapping("/feedback")
-    public String feedBackSeller(@RequestBody JSONObject payload){
-        return "Feedback successful";
-    }
-
-    @GetMapping("/sellerRatingByBuyer")
-    public String sellerRating(@RequestBody JSONObject payload){
-        return "Seller Rating";
-    }
-
-    @GetMapping("/search")
-    public String searchItems(@RequestBody JSONObject payload){
-        return "Search item successful";
-    }
-
-    @GetMapping("/purchaseHistory")
-    public String purchaseHistory(@RequestBody JSONObject payload){
-        return "purchase History";
-    }
-    
-    // @PutMapping("/update")
-    // public String updateItemPrice(@RequestBody String payload){
-    //     System.out.println(payload);
-    //     return "Updated Successfully";
-    // }
 }
 

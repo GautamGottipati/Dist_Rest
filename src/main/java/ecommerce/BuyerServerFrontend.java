@@ -1,19 +1,14 @@
-package com.example.demo;
-
-import com.fasterxml.jackson.databind.util.JSONPObject;
+package ecommerce;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.json.simple.JSONObject;
 
 @RestController
-public class BuyerFrontend {
+public class BuyerServerFrontend {
 
     @GetMapping("/helloBuyer")
     public String helloWorld(){
@@ -54,7 +49,7 @@ public class BuyerFrontend {
         return "put successful";
     }
 
-    @DeleteMapping("/removeItem")
+    @DeleteMapping("/removeItemFromShoppingCart")
     public String removeFromShoppingCart(@RequestBody JSONObject payload){
         return "Removed Items";
     }
@@ -74,7 +69,7 @@ public class BuyerFrontend {
         return "Feedback successful";
     }
 
-    @GetMapping("/sellerRating")
+    @GetMapping("/sellerRatingByBuyer")
     public String sellerRating(@RequestBody JSONObject payload){
         return "Seller Rating";
     }

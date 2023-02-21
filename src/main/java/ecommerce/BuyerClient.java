@@ -1,4 +1,4 @@
-package com.example.demo;
+package ecommerce;
 
 
 import java.io.*;
@@ -11,13 +11,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 
-public class SellerClient {
+public class BuyerClient {
     private PrintWriter out;
     private BufferedReader in;
 
 
-        static public void createAccount(HttpClient client, String payload) throws IOException, InterruptedException{
-            URI createUser = URI.create("http://localhost:8080/createUser");
+        static public void createBuyerAccount(HttpClient client, String payload) throws IOException, InterruptedException{
+            URI createUser = URI.create("http://localhost:8080/buyer/createUser");
             HttpRequest httpPostRequest = HttpRequest.newBuilder()
                                                 .uri(createUser)
                                                 .header("Content-Type", "text/plain")
@@ -38,8 +38,8 @@ public class SellerClient {
 //            System.out.println(loginResponse.body());
 //        }
 
-    static public void login(HttpClient client, String payload) throws IOException, InterruptedException{
-        URL url = new URL ("http://localhost:8080/login");
+    static public void loginBuyer(HttpClient client, String payload) throws IOException, InterruptedException{
+        URL url = new URL ("http://localhost:8080/buyer/login");
         HttpURLConnection con = (HttpURLConnection)url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json");
@@ -68,8 +68,8 @@ public class SellerClient {
 //        System.out.println(loginResponse.body());
     }
 
-        static public void logout(HttpClient client, String payload) throws IOException, InterruptedException{
-            URI logout = URI.create("http://localhost:8080/logout");
+        static public void logoutBuyer(HttpClient client, String payload) throws IOException, InterruptedException{
+            URI logout = URI.create("http://localhost:8080/buyer/logout");
             HttpRequest httpLogoutRequest = HttpRequest.newBuilder()
                                                 .uri(logout)
                                                 .header("Content-Type", "text/plain")
@@ -79,17 +79,17 @@ public class SellerClient {
             System.out.println(logoutResponse.body());
         }
 
-        static public void rating(HttpClient client, String payload) throws IOException, InterruptedException{
+        static public void addToShoppingCart(HttpClient client, String payload) throws IOException, InterruptedException{
             String[] parts = payload.split(" ");
-            URI ratingUri = URI.create("http://localhost:8080/rating/"+parts[1]);
+            URI ratingUri = URI.create("http://localhost:8080//addToCart");
             HttpRequest requestSellerRating = HttpRequest.newBuilder().uri(ratingUri).GET().build();
             HttpResponse<String> response = client.send(requestSellerRating, HttpResponse.BodyHandlers.ofString());
             System.out.println(response.body());
 
         }
 
-        static public void putItem(HttpClient client, String payload) throws IOException, InterruptedException{
-            URI putItem = URI.create("http://localhost:8080/putItem");
+        static public void removeFromShoppingCart(HttpClient client, String payload) throws IOException, InterruptedException{
+            URI putItem = URI.create("http://localhost:8080/removeItem");
             HttpRequest httpPutItemRequest = HttpRequest.newBuilder()
                                                 .uri(putItem)
                                                 .header("Content-Type", "text/plain")
@@ -99,8 +99,8 @@ public class SellerClient {
             System.out.println(putItemResponse.body());
         }
 
-        static public void updateItem(HttpClient client, String payload) throws IOException, InterruptedException{
-            URI updateItemPrice = URI.create("http://localhost:8080/update");
+        static public void clearShoppingCart(HttpClient client, String payload) throws IOException, InterruptedException{
+            URI updateItemPrice = URI.create("http://localhost:8080/clearCart");
             HttpRequest httpUpdateRequest = HttpRequest.newBuilder()
                                                 .uri(updateItemPrice)
                                                 .header("Content-Type", "text/plain")
@@ -110,8 +110,54 @@ public class SellerClient {
             System.out.println(updateResponse.body());
 
         }
-    
 
+        static public void displayShoppingCart(HttpClient client, String payload) throws IOException, InterruptedException{
+            String[] parts = payload.split(" ");
+            URI ratingUri = URI.create("http://localhost:8080/display");
+            HttpRequest requestSellerRating = HttpRequest.newBuilder().uri(ratingUri).GET().build();
+            HttpResponse<String> response = client.send(requestSellerRating, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+
+        }
+
+        static public void feedBackSeller(HttpClient client, String payload) throws IOException, InterruptedException{
+            String[] parts = payload.split(" ");
+            URI ratingUri = URI.create("http://localhost:8080//feedback");
+            HttpRequest requestSellerRating = HttpRequest.newBuilder().uri(ratingUri).GET().build();
+            HttpResponse<String> response = client.send(requestSellerRating, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+
+        }
+
+        static public void sellerRating(HttpClient client, String payload) throws IOException, InterruptedException{
+            String[] parts = payload.split(" ");
+            URI ratingUri = URI.create("http://localhost:8080/sellerRating");
+            HttpRequest requestSellerRating = HttpRequest.newBuilder().uri(ratingUri).GET().build();
+            HttpResponse<String> response = client.send(requestSellerRating, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+
+        }
+
+        static public void searchItems(HttpClient client, String payload) throws IOException, InterruptedException{
+            String[] parts = payload.split(" ");
+            URI ratingUri = URI.create("http://localhost:8080/search");
+            HttpRequest requestSellerRating = HttpRequest.newBuilder().uri(ratingUri).GET().build();
+            HttpResponse<String> response = client.send(requestSellerRating, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+
+        }
+        
+        static public void purchaseHistory(HttpClient client, String payload) throws IOException, InterruptedException{
+            String[] parts = payload.split(" ");
+            URI ratingUri = URI.create("http://localhost:8080/purchaseHistory");
+            HttpRequest requestSellerRating = HttpRequest.newBuilder().uri(ratingUri).GET().build();
+            HttpResponse<String> response = client.send(requestSellerRating, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+
+        }
+
+
+        
 
         public static void main(String[] args) throws IOException, InterruptedException{
             HttpClient client = HttpClient.newHttpClient();
@@ -132,22 +178,37 @@ public class SellerClient {
                 // System.out.println("Part3 = "+part3);
 
                 if(part1.equals("1")){
-                    createAccount(client, st);
+                    createBuyerAccount(client, st);
                 }
                 if(part1.equals("2")){
-                    login(client, st);
+                    loginBuyer(client, st);
                 }
                 if(part1.equals("3")){
-                    logout(client, st);
+                    logoutBuyer(client, st);
                 }
                 if(part1.equals("4")){
-                    rating(client, st);
+                    addToShoppingCart(client, st);
                 }
                 if(part1.equals("5")){
-                    putItem(client, st);
+                    removeFromShoppingCart(client, st);
                 }
                 if(part1.equals("6")){
-                    updateItem(client, st);
+                    clearShoppingCart(client, st);
+                }
+                if(part1.equals("7")){
+                    displayShoppingCart(client, st);
+                }
+                if(part1.equals("8")){
+                    feedBackSeller(client, st);
+                }
+                if(part1.equals("9")){
+                    sellerRating(client, st);
+                }
+                if(part1.equals("10")){
+                    searchItems(client, st);
+                }
+                if(part1.equals("11")){
+                    purchaseHistory(client, st);
                 }
 
                 // System.out.println(st + st.charAt(0));

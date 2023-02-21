@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.json.simple.JSONObject;
 
 @RestController
-public class HelloWorld {
+public class SellerFrontend {
 
     @GetMapping("/hello")
     public String helloWorld(){
@@ -37,6 +37,7 @@ public class HelloWorld {
     @PostMapping("/login")
     public String login(@RequestBody JSONObject payload){
 //        System.out.println(payload);
+        System.out.println("I am here");
         System.out.println((String) payload.get("name"));
         System.out.println((String) payload.get("password"));
         return "User logged in Successfully";
